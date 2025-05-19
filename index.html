@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D'Sara Spa - Agendar Cita</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rosa-claro: #FFF0F5;
+            --rosa-pastel: #FFE6EE;
+            --rosa-intenso: #FF69B4;
+            --rosa-oscuro: #DB3D8F;
+            --rosa-borde: #FFB6C1;
+            --texto-principal: #5E2D45;
+            --texto-secundario: #9E3E6E;
+            --sombra: rgba(222, 120, 160, 0.2);
+            --blanco-rosado: #FFF9FB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--rosa-claro);
+            color: var(--texto-principal);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--rosa-pastel);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--sombra);
+            border: 1px solid var(--rosa-borde);
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: var(--rosa-oscuro);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--rosa-intenso), var(--rosa-oscuro));
+            border-radius: 3px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--texto-secundario);
+            font-size: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid var(--rosa-borde);
+            border-radius: 10px;
+            background-color: var(--blanco-rosado);
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--rosa-intenso);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--rosa-intenso), var(--rosa-oscuro));
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #servicio {
+            font-style: italic;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .logo img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        /* Efectos para dispositivos móviles */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 25px 20px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            input, select, button {
+                padding: 12px 15px;
+            }
+            
+            button {
+                padding: 14px;
+                font-size: 16px;
+            }
+
+            .logo img {
+                max-width: 160px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            label {
+                font-size: 14px;
+            }
+            
+            input, select {
+                font-size: 15px;
+                padding: 12px;
+            }
+
+            .logo img {
+                max-width: 140px;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .form-group {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .form-group:nth-child(6) { animation-delay: 0.6s; }
+        button { animation-delay: 0.7s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <!-- Reemplaza la URL con la de tu propio logo -->
+            <img src="LOGO_SPA.jpg" alt="D'Sara Spa Logo">
+        </div>
+        <h1>💖 Agendar Cita 💖</h1>
+        <form id="citaForm">
+            <div class="form-group">
+                <label for="nombre">Nombre completo:</label>
+                <input type="text" id="nombre" required placeholder="Ej: María González">
+            </div>
+            <div class="form-group">
+                <label for="telefono">Número de teléfono:</label>
+                <input type="tel" id="telefono" required placeholder="Ej: 5512345678">
+            </div>
+            <div class="form-group">
+                <label for="terapeuta">Selecciona tu terapeuta:</label>
+                <select id="terapeuta" required>
+                    <option value="">-- Elegir terapeuta --</option>
+                    <option value="Natalia">Natalia (L-J-V 4pm-7pm)</option>
+                    <option value="Emi">Emi (L-V 9am-7pm)</option>
+                    <option value="Lesly">Lesly (L-V 9am-7pm)</option>
+                    <option value="Britani">Britani (S-D 7am-12pm)</option>
+                    <option value="Asmodea">Asmodea (L-S 10am-8pm)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="servicio">Servicio deseado:</label>
+                <select id="servicio" required>
+                    <option value="">Primero selecciona una terapeuta</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fecha">Fecha preferida:</label>
+                <input type="date" id="fecha" required>
+            </div>
+            <div class="form-group">
+                <label for="hora">Hora preferida:</label>
+                <input type="time" id="hora" required>
+            </div>
+            <button type="submit">
+                <span>Enviar por WhatsApp</span>
+                <span>💖</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Objeto con los servicios por terapeuta (basado en el PDF)
+        const serviciosPorTerapeuta = {
+            "Natalia": [
+                "Masaje Relajante ($1200)",
+                "Depilación Genital ($800)",
+                "Venta de contenido (5 fotos + 1 video) ($300)"
+            ],
+            "Emi": [
+                "Masaje Relajante ($1200)",
+                "Encuentro ($1500)",
+                "Rapidín 1 ($1000)",
+                "Rapidín 2 ($700)",
+                "Rapidín 3 ($600)",
+                "Venta de contenido (1 video HD) ($500)"
+            ],
+            "Lesly": [
+                "Masaje Relajante ($1200)",
+                "Depilación Genital ($800)",
+                "Encuentro ($1500)",
+                "Rapidín 1 ($1000)",
+                "Rapidín 2 ($700)",
+                "Rapidín 3 ($600)"
+            ],
+            "Britani": [
+                "Masaje Relajante ($1200)",
+                "Encuentro ($1500)",
+                "Rapidín 1 ($1000)",
+                "Rapidín 2 ($700)",
+                "Rapidín 3 ($600)"
+            ],
+            "Asmodea": [
+                "Masaje Sadico en Habitación X (1h-1h20min) ($1500)",
+                "Masaje Sadico en Habitación X (40min) ($1000)"
+            ]
+        };
+
+        // Actualizar servicios al seleccionar terapeuta
+        document.getElementById('terapeuta').addEventListener('change', function() {
+            const terapeuta = this.value;
+            const servicioSelect = document.getElementById('servicio');
+            
+            // Limpiar opciones anteriores
+            servicioSelect.innerHTML = '<option value="">Selecciona un servicio</option>';
+            
+            // Añadir servicios correspondientes
+            if (terapeuta && serviciosPorTerapeuta[terapeuta]) {
+                serviciosPorTerapeuta[terapeuta].forEach(servicio => {
+                    const option = document.createElement('option');
+                    option.value = servicio;
+                    option.textContent = servicio;
+                    servicioSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Validar fecha futura
+        document.getElementById('fecha').addEventListener('change', function() {
+            const fechaSeleccionada = new Date(this.value);
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            if (fechaSeleccionada < hoy) {
+                alert('Por favor selecciona una fecha futura');
+                this.value = '';
+            }
+        });
+
+        // Enviar por WhatsApp
+        document.getElementById('citaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value;
+            const terapeuta = document.getElementById('terapeuta').value;
+            const servicio = document.getElementById('servicio').value;
+            const fecha = document.getElementById('fecha').value;
+            const hora = document.getElementById('hora').value;
+
+            if (!nombre || !telefono || !terapeuta || !servicio || !fecha || !hora) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const mensaje = `¡Hola! Quiero agendar una cita en D'Sara Spa:%0A%0A` +
+                            `*Nombre:* ${nombre}%0A` +
+                            `*Teléfono:* ${telefono}%0A` +
+                            `*Terapeuta:* ${terapeuta}%0A` +
+                            `*Servicio:* ${servicio}%0A` +
+                            `*Fecha:* ${fecha}%0A` +
+                            `*Hora:* ${hora}%0A%0A` +
+                            `Por favor, confírmenme disponibilidad. ¡Gracias!`;
+
+            window.open(`https://wa.me/527207492611?text=${mensaje}`, '_blank');
+        });
+    </script>
+</body>
+</html>
