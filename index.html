@@ -147,6 +147,25 @@
             border-radius: 10px;
         }
 
+        /* Estilos para notificación */
+        #notificacion {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 5px;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        /* Estilos para botón deshabilitado */
+        button:disabled {
+            opacity: 0.7;
+            transform: none !important;
+            cursor: not-allowed;
+        }
+
         /* Efectos para dispositivos móviles */
         @media (max-width: 768px) {
             body {
@@ -226,7 +245,6 @@
 <body>
     <div class="container">
         <div class="logo">
-            <!-- Reemplaza la URL con la de tu propio logo -->
             <img src="LOGO_SPA.jpg" alt="D'Sara Spa Logo">
         </div>
         <h1>💖 Agendar Cita 💖</h1>
@@ -268,10 +286,13 @@
                 <span>💖</span>
             </button>
         </form>
+        <div id="notificacion">
+            ¡Cita enviada con éxito! Pronto nos comunicaremos contigo.
+        </div>
     </div>
 
     <script>
-        // Objeto con los servicios por terapeuta (basado en el PDF)
+        // Objeto con los servicios por terapeuta
         const serviciosPorTerapeuta = {
             "Natalia": [
                 "Masaje Relajante ($1200)",
@@ -305,10 +326,8 @@
             const terapeuta = this.value;
             const servicioSelect = document.getElementById('servicio');
             
-            // Limpiar opciones anteriores
             servicioSelect.innerHTML = '<option value="">Selecciona un servicio</option>';
             
-            // Añadir servicios correspondientes
             if (terapeuta && serviciosPorTerapeuta[terapeuta]) {
                 serviciosPorTerapeuta[terapeuta].forEach(servicio => {
                     const option = document.createElement('option');
@@ -331,32 +350,89 @@
             }
         });
 
-        // Enviar por WhatsApp
-        document.getElementById('citaForm').addEventListener('submit', function(e) {
+        // Enviar formulario
+        document.getElementById('citaForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const nombre = document.getElementById('nombre').value;
-            const telefono = document.getElementById('telefono').value;
+            // Obtener valores
+            const nombre = document.getElementById('nombre').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
             const terapeuta = document.getElementById('terapeuta').value;
             const servicio = document.getElementById('servicio').value;
             const fecha = document.getElementById('fecha').value;
             const hora = document.getElementById('hora').value;
 
+            // Validación
             if (!nombre || !telefono || !terapeuta || !servicio || !fecha || !hora) {
                 alert('Por favor completa todos los campos');
                 return;
             }
 
-            const mensaje = `¡Hola! Quiero agendar una cita en D'Sara Spa:%0A%0A` +
-                            `*Nombre:* ${nombre}%0A` +
-                            `*Teléfono:* ${telefono}%0A` +
-                            `*Terapeuta:* ${terapeuta}%0A` +
-                            `*Servicio:* ${servicio}%0A` +
-                            `*Fecha:* ${fecha}%0A` +
-                            `*Hora:* ${hora}%0A%0A` +
-                            `Por favor, confírmenme disponibilidad. ¡Gracias!`;
+            // Objeto con los datos
+            const datos = {
+                nombre,
+                telefono,
+                terapeuta,
+                servicio,
+                fecha,
+                hora
+            };
 
-            window.open(`https://wa.me/527207492611?text=${mensaje}`, '_blank');
+            // Mostrar carga
+            const boton = this.querySelector('button');
+            const textoOriginal = boton.innerHTML;
+            boton.innerHTML = 'Enviando... <span>⏳</span>';
+            boton.disabled = true;
+
+            try {
+                // URL de tu Google Apps Script
+                const scriptUrl = 'https://script.google.com/macros/s/AKfycbw6vcR9lbOqDpi1hz3yYp8yMArcRCaZtm_55_Ej1IK5see3psjcWtW7R-KnINAWTgKFPw/exec';
+                
+                // Enviar a Google Sheets
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(datos),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success) {
+                    // Enviar por WhatsApp
+                    const mensaje = `¡Hola! Quiero agendar una cita en D'Sara Spa:%0A%0A` +
+                                    `Nombre: ${nombre}%0A` +
+                                    `Teléfono: ${telefono}%0A` +
+                                    `Terapeuta: ${terapeuta}%0A` +
+                                    `Servicio: ${servicio}%0A` +
+                                    `Fecha: ${fecha}%0A` +
+                                    `Hora: ${hora}%0A%0A` +
+                                    `Por favor, confírmenme disponibilidad. ¡Gracias!`;
+
+                    window.open(`https://wa.me/527207492611?text=${mensaje}`, '_blank');
+                    
+                    // Mostrar notificación
+                    const notificacion = document.getElementById('notificacion');
+                    notificacion.style.display = 'block';
+                    setTimeout(() => {
+                        notificacion.style.display = 'none';
+                    }, 5000);
+                    
+                    // Resetear formulario
+                    this.reset();
+                    document.getElementById('servicio').innerHTML = '<option value="">Primero selecciona una terapeuta</option>';
+                } else {
+                    alert('Error al guardar: ' + (resultado.error || 'Intenta de nuevo'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión. Por favor inténtalo de nuevo.');
+            } finally {
+                // Restaurar botón
+                boton.innerHTML = textoOriginal;
+                boton.disabled = false;
+            }
         });
     </script>
 </body>
