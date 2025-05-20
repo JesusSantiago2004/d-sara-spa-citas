@@ -147,6 +147,24 @@
             border-radius: 10px;
         }
 
+        .admin-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .admin-link a {
+            color: var(--rosa-oscuro);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .admin-link a:hover {
+            text-decoration: underline;
+        }
+
         /* Efectos para dispositivos móviles */
         @media (max-width: 768px) {
             body {
@@ -226,7 +244,6 @@
 <body>
     <div class="container">
         <div class="logo">
-            <!-- Reemplaza la URL con la de tu propio logo -->
             <img src="LOGO_SPA.jpg" alt="D'Sara Spa Logo">
         </div>
         <h1>💖 Agendar Cita 💖</h1>
@@ -264,14 +281,14 @@
                 <input type="time" id="hora" required>
             </div>
             <button type="submit">
-                <span>Enviar por WhatsApp</span>
+                <span>Agendar Cita</span>
                 <span>💖</span>
             </button>
         </form>
     </div>
 
     <script>
-        // Objeto con los servicios por terapeuta (basado en el PDF)
+        // Objeto con los servicios por terapeuta
         const serviciosPorTerapeuta = {
             "Natalia": [
                 "Masaje Relajante ($1200)",
@@ -331,7 +348,14 @@
             }
         });
 
-        // Enviar por WhatsApp
+        // Función para guardar cita en localStorage
+        function guardarCita(cita) {
+            let citas = JSON.parse(localStorage.getItem('citasDSSpa')) || [];
+            citas.push(cita);
+            localStorage.setItem('citasDSSpa', JSON.stringify(citas));
+        }
+
+        // Guardar cita y enviar por WhatsApp
         document.getElementById('citaForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -347,6 +371,23 @@
                 return;
             }
 
+            // Crear objeto de cita
+            const cita = {
+                id: Date.now(), // ID único basado en timestamp
+                nombre,
+                telefono,
+                terapeuta,
+                servicio,
+                fecha,
+                hora,
+                fechaRegistro: new Date().toISOString(),
+                estado: 'Pendiente'
+            };
+
+            // Guardar en localStorage
+            guardarCita(cita);
+
+            // Crear mensaje para WhatsApp
             const mensaje = `¡Hola! Quiero agendar una cita en D'Sara Spa:%0A%0A` +
                             `Nombre: ${nombre}%0A` +
                             `Teléfono: ${telefono}%0A` +
@@ -355,8 +396,22 @@
                             `Fecha: ${fecha}%0A` +
                             `Hora: ${hora}%0A%0A` +
                             `Por favor, confírmenme disponibilidad. ¡Gracias!`;
-
-            window.open(`https://wa.me/527207492611?text=${mensaje}`, '_blank');
+            
+            // Número de WhatsApp
+            const numeroWhatsApp = '+527207492611';
+            
+            // URL para abrir WhatsApp
+            const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
+            
+            // Mostrar confirmación
+            alert('¡Cita agendada con éxito! Se abrirá WhatsApp para confirmar.');
+            
+            // Abrir WhatsApp en una nueva pestaña
+            window.open(urlWhatsApp, '_blank');
+            
+            // Limpiar formulario
+            this.reset();
+            document.getElementById('servicio').innerHTML = '<option value="">Primero selecciona una terapeuta</option>';
         });
     </script>
 </body>
